@@ -1,0 +1,4 @@
+com\damianosiak\egradebookapprest\repositories\TeacherRepository.class
+com\damianosiak\egradebookapprest\api\mapper\TeacherMapperImpl.class
+com\damianosiak\egradebookapprest\bootstrap\DBDataLoader.class
+com\damianosiak\egradebookapprest\EgradebookapprestApplication.class
