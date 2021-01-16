@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Delete Student | eGradeBookAppREST</title>
+		<style>
+			.loader{
+				border: 16px solid #f3f3f3; /* Light grey */
+				border-top: 16px solid #3498db; /* Blue */
+				border-radius: 50%;
+				width: 360px;
+				height: 360px;
+				animation: spin 2s linear infinite;
+			}
+			@keyframes spin {
+				0% { transform: rotate(0deg); }
+				100% { transform: rotate(360deg); }
+			}
+		</style>
+	</head>
+	<body>
+		<h1 style="text-align:center;position:relative;top:33vh">Deleting in progress</h1>
+		<div class="loader" style="display:block;margin:auto;position:relative;top:10vh"></div>
+		<script>
+			(function(){
+				var x=0;
+				var id2 = localStorage.getItem("localStudentId");
+				var id = parseInt(id2);
+				
+				var readStudent=new XMLHttpRequest();
+				var url="../api/student/"+id;
+				readStudent.open("GET",url,true);
+				readStudent.onload=function(){
+					var dataStudent=JSON.parse(this.response)
+					var dataGradesStudent=dataStudent.studentGrades;
+					var allThisStudentGrades=[];
+					
+					dataGradesStudent.forEach((grade)=>{
+						allThisStudentGrades.push(grade.gradeId);
+					});
+					x=allThisStudentGrades.length;
+					console.log(x);
+					allThisStudentGrades.forEach((grade,index)=>{
+						//var newtab=null;
+						setTimeout(function(){
+							localStorage.setItem("localGradeId",grade);
+							newtab=window.open("/grades/delete","_blank");
+						},index*1250);
+					});
+					//window.location.href = "../index.html";
+				}
+				readStudent.send();
+				
+				var requestDelete = new XMLHttpRequest();
+				var url='../api/student/'+id;
+				requestDelete.open('DELETE', url, true);
+				requestDelete.send;
+				requestDelete.onload = function(){
+					if(requestDelete.readyState==4 && requestDelete.status=="200"){
+						//alert("Deleted");
+						//window.location.reload();
+						//window.location.href("../index.html");
+					}else{
+						//alert("Error");
+					}
+				}
+				requestDelete.send();
+				
+				setTimeout(function(){
+					//window.open("../index.html","_blank");
+					setTimeout(function(){
+						//window.open("../index.html","_blank");
+						//window.history.back();
+						window.location.href="/students";
+					},(x)*1500);
+				},125);
+			})();
+		</script>
+	</body>	
+</html>

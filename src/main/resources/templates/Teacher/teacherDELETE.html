@@ -1,0 +1,137 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Delete Teacher | eGradeBookAppREST</title>
+	<style>
+		.loader{
+			border: 16px solid #f3f3f3; /* Light grey */
+			border-top: 16px solid #3498db; /* Blue */
+			border-radius: 50%;
+			width: 360px;
+			height: 360px;
+			animation: spin 2s linear infinite;
+		}
+		@keyframes spin {
+			0% { transform: rotate(0deg); }
+			100% { transform: rotate(360deg); }
+		}
+		</style>
+		
+	</head>
+	<body>
+		<h1 style="text-align:center;position:relative;top:33vh">Deleting in progress</h1>
+		<div class="loader" style="display:block;margin:auto;position:relative;top:10vh"></div>
+		<script>
+			(function(){
+				var id2 = localStorage.getItem("localTeacherId");
+				var id = parseInt(id2);
+				
+				var requestReadGrades = new XMLHttpRequest();
+				requestReadGrades.open('GET', 'http://127.0.0.1:8080/api/grade/', true);
+				requestReadGrades.onload = function () {
+					var data = JSON.parse(this.response)
+					data = data.gradeList;
+					data.forEach((grade)=>{
+						var thisGradeId=grade.gradeId;
+						var thisGradeValue=grade.gradeValue;
+						var thisGradeDescription=grade.gradeDescriptionLastName;
+						var thisGradeTeacherId=grade.gradeTeacher.teacherId;
+						
+						if(thisGradeTeacherId === id){
+							//alert("Trafiony");
+							var requestReadStudents = new XMLHttpRequest()
+							requestReadStudents.open('GET', 'http://127.0.0.1:8080/api/student/', true)
+							requestReadStudents.onload = function () {
+								var data = JSON.parse(this.response)
+								data = data.studentList;
+								data.forEach((student)=>{
+									var thisStudentId=student.studentId;
+									var thisStudentFirstName=student.studentFirstName;
+									var thisStudentLastName=student.studentLastName;
+									var allThisStudentGrades=[];
+									var dataGrades = student.studentGrades;
+									dataGrades.forEach((thisStudentGrade)=>{
+										if(thisStudentGrade.gradeId===thisGradeId){
+											//delete (means not add id to array with "good" ids)
+										}else{
+											allThisStudentGrades.push(thisStudentGrade.gradeId);
+										}
+									})
+									
+									var allThisStudentGradesJSON=[];
+									allThisStudentGrades.forEach((grade)=>{
+										var tempGrade={};
+										tempGrade.gradeId=grade
+										allThisStudentGradesJSON.push(tempGrade);
+									})
+									var jsonStudent={studentId: thisStudentId, studentFirstName: thisStudentFirstName, studentLastName: thisStudentLastName, studentGrades: allThisStudentGradesJSON};
+									jsonStudent = JSON.stringify(jsonStudent);
+									
+									//clear student grade list and add only "good" ids from array
+									fetch('http://127.0.0.1:8080/api/student/'+thisStudentId,{
+										method: "PUT",
+										body: jsonStudent,headers: {
+											"Content-type": "application/json; charset=UTF-8"
+											}
+										}
+									)
+								})
+							}
+							requestReadStudents.send();
+							
+							setTimeout(function(){
+								var xhr = new XMLHttpRequest();
+								xhr.open("DELETE", "http://127.0.0.1:8080/api/grade/"+thisGradeId);
+								xhr.setRequestHeader("Access-Control-Allow-Origin", "*");
+								xhr.send();
+								//alert("Deleting grade...")
+								setTimeout(function(){
+								//window.location.href = "../index.html";
+								},6000);
+							}, 125);
+						}
+					
+					/*setTimeout(function(){
+						//alert(id);
+						window.location.reload(true);
+					},2500);*/
+					
+					});
+				}
+				requestReadGrades.send();
+				
+				var requestReadSubjects = new XMLHttpRequest();
+				requestReadSubjects.open('GET', 'http://127.0.0.1:8080/api/subject/', true);
+				requestReadSubjects.onload = function () {
+					var data = JSON.parse(this.response)
+					data = data.subjectList;
+					data.forEach((subject)=>{
+						var thisSubjectId=subject.subjectId;
+						var thisSubjectName=subject.subjectName;
+						var thisSubjectTeacherId=subject.subjectTeacher.teacherId;
+						if(thisSubjectTeacherId===id){
+							var delSubject=new XMLHttpRequest();
+							delSubject.open("DELETE","http://127.0.0.1:8080/api/subject/"+thisSubjectId,true);
+							delSubject.send();
+						}
+					});
+				};
+				requestReadSubjects.send();
+				
+				setTimeout(function(){
+					var delTeacher=new XMLHttpRequest();
+					delTeacher.open("DELETE","http://127.0.0.1:8080/api/teacher/"+id,true);
+					delTeacher.send();
+					//window.location.href="../index.html";
+				},2000);
+				
+				setTimeout(function(){
+					//window.location.href="../index.html";
+					window.close();
+				},6000);
+			})()//;window.location.href="../index.html";
+		</script>
+	</body>	
+</html>

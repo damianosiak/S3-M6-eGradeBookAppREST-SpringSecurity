@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <title>Login | eGradeBookAppREST</title>
+    <base href="/">
+    <link href="https://fonts.googleapis.com/css?family=Dosis:400,700" rel="stylesheet" />
+    <!--<link th:href="@{/css/style.css}" rel="stylesheet" />-->
+    <link th:href="@{/Bootstrap/css/bootstrap.min.css}" rel="stylesheet" />
+    <script th:href="@{/Bootstrap/js/bootstrap.bundle.min.js}"></script>
+    <style>
+        body{
+            background-image:url("/img/road.jpg");
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+        }
+    </style>
+</head>
+<body>
+        <div class="card col-sm-4" style="opacity: 0.75; border-style: solid; border-width: 1px; border-color: black; position: relative; margin: auto; top:5vh ; text-align: center;">
+            <div class="card-header bg-primary text-white fw-bold">eGradeBookAppREST | Login</div>
+            <div class="card-body">
+                <div th:if="${param.error}" class="bg-danger text-white col-sm-12">
+                    Invalid username or password.
+                </div>
+                <div th:if="${param.logout}" class="bg-warning text-white col-sm-12">
+                    You have been logged out.
+                </div>
+                <form th:action="@{/login}" method="post">
+                    <label> User Name : </label><div class="col-sm-12"><input type="text" class="form-control" name="username" style="text-align:center"/></div>
+                    <label> Password : </label><div class="col-sm-12"><input type="password" class="form-control" name="password" style="text-align:center"/></div><br/>
+                    <div class="col-sm-12"><input type="submit" class="btn btn-success col-sm-12 gap-2" value="Sign In"/></div>
+                </form>
+            </div>
+            <div class="card-footer">
+                <span>Damian Osiak</span><br/>
+                <span>AWSB Cieszyn</span><br/>
+                <span>Numer albumu: 40843</span><br/>
+                <span>Informatyka niestacjonarnie</span><br/>
+                <span>3 semestr, zima 2020/21</span><br/>
+                <span><a href="mailto:damian.osiak@student.wsb.edu.pl">damian.osiak@student.wsb.edu.pl</a></span>
+            </div>
+        </div>
+</body>
+</html>

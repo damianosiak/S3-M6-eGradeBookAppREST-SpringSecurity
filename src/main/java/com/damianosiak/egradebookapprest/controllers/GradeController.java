@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("api/grade/")
+@CrossOrigin()
 public class GradeController {
     private final GradeService gradeService;
 
@@ -44,6 +45,7 @@ public class GradeController {
     }
 
     @DeleteMapping("{id}")
+    @CrossOrigin()
     public ResponseEntity<Void> deleteGrade(@PathVariable Long id){
         gradeService.deleteGradeByGradeId(id);
         return new ResponseEntity<Void>(HttpStatus.OK);
